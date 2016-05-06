@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+@class ZHBodyView;
+
+typedef void (^saveImgBlock) (ZHBodyView *, UIImage *image);
 
 @interface ZHBodyView : UIView
 
@@ -14,7 +17,14 @@
 
 @property (nonatomic,strong) UIColor *lineColor;
 
+@property (nonatomic,copy) saveImgBlock imgBlock;
+
 - (void)cleanScreen;
 
+- (void)back;
+
+- (void)eraser;
+
+- (void)saveImg;
 
 @end

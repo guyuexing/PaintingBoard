@@ -44,8 +44,30 @@
     [self changeTheLineWidth:self.slider];
     [self changeLineColor:self.firstBtn];
     
+    self.bodyView.imgBlock = ^(ZHBodyView *bodyView,UIImage *image){
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    
+    };
+    
     
 }
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    if (error == nil) {
+        UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示:" message:@"保存成功！" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+        [alertC addAction:confirm];
+        
+        [self presentViewController:alertC animated:YES completion:nil];
+        
+    }else{
+        NSLog(@"保存失败");
+    
+    }
+    
+    
+}
+
+
 //改变线宽
 - (void)changeTheLineWidth:(UISlider *)slider{
     
@@ -67,6 +89,27 @@
     
 }
 
+//回退
+- (void)backBtnClick{
+
+    [self.bodyView back];
+
+}
+
+//橡皮擦
+- (void)eraserBtnClick{
+
+    self.bodyView.lineColor = self.bodyView.backgroundColor;
+}
+
+//保存
+- (void)saveBtnClick{
+
+    [self.bodyView saveImg];
+
+}
+
+
 - (void)setUI{
     
     
@@ -78,10 +121,10 @@
         make.height.mas_equalTo(50);
     }];
     UIBarButtonItem *clearScreen = [[UIBarButtonItem alloc] initWithTitle:@"清屏" style:UIBarButtonItemStylePlain target:self action:@selector(cleanScreenBtnClick)];
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"回退" style:UIBarButtonItemStylePlain target:nil action:nil];
-    UIBarButtonItem *eraser = [[UIBarButtonItem alloc] initWithTitle:@"橡皮擦" style:UIBarButtonItemStylePlain target:nil action:nil];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"回退" style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClick)];
+    UIBarButtonItem *eraser = [[UIBarButtonItem alloc] initWithTitle:@"橡皮擦" style:UIBarButtonItemStylePlain target:self action:@selector(eraserBtnClick)];
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStylePlain target:nil action:nil];
+    UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStylePlain target:self action:@selector(saveBtnClick)];
     toolBar.items = @[clearScreen,back,eraser,flex,saveBtn];
     
     self.cleanScreen = clearScreen;

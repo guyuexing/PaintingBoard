@@ -21,12 +21,42 @@
 
 @implementation ZHBodyView
 
+//清屏
 - (void)cleanScreen{
 
     [self.arrM removeAllObjects];
     [self setNeedsDisplay];
     
 }
+
+//回退
+- (void)back{
+
+    [self.arrM removeLastObject];
+    [self setNeedsDisplay];
+    
+}
+
+//橡皮擦
+- (void)eraser{
+    //xiang
+}
+
+//保存图片
+- (void)saveImg{
+
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0.0);
+    CGContextRef ctxRef = UIGraphicsGetCurrentContext();
+    
+    [self.layer renderInContext:ctxRef];
+    
+    UIImage *screenImg = UIGraphicsGetImageFromCurrentImageContext();
+    
+    if (self.imgBlock) {
+        self.imgBlock(self,screenImg);
+    }
+}
+
 
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -41,6 +71,10 @@
     [path moveToPoint:loc];
     
     //将每一条路径保存进数组中
+    path.lineC = self.lineColor;
+    
+    path.lineWidth = self.lineWidth;
+    
     [self.arrM addObject:path];
     
     [self setNeedsDisplay];
@@ -73,8 +107,9 @@
     
     CGContextDrawPath(ctxRef, kCGPathStroke);
 */
-    self.arrM.lastObject.lineWidth = self.lineWidth;
-    self.arrM.lastObject.lineC = self.lineColor;
+    //将path的线宽和线条颜色属性在Path加入到数组中的时候同时加入
+    //self.arrM.lastObject.lineWidth = self.lineWidth;
+    //self.arrM.lastObject.lineC = self.lineColor;
     
     //使用这种方法设置线条颜色会把所有的线条全部设置成一种颜色
     //因此可以自定义UIBezierPath的线条颜色
